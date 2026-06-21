@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>汉语语法练习题 · 第六章</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #F7F5F0;
+    --surface: #FFFFFF;
+    --border: #E2DED7;
+    --border-soft: #EDE9E2;
+    --text-primary: #1A1714;
+    --text-secondary: #6B6560;
+    --text-hint: #A09890;
+    --accent: #3D5A80;
+    --accent-light: #EBF0F7;
+    --accent-mid: #B8CCE4;
+    --green: #2D6A4F;
+    --green-light: #E8F5EE;
+    --red: #A0341E;
+    --red-light: #FCEEE9;
+    --amber: #7A5C1E;
+    --amber-light: #FDF4E3;
+    --tag-bg: #EBF0F7;
+    --tag-text: #2A4A70;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text-primary);
+    font-family: 'Noto Serif SC', 'Source Han Serif SC', 'SimSun', Georgia, serif;
+    font-size: 16px;
+    line-height: 1.75;
+    min-height: 100vh;
+  }
+
+  /* ── 版式 ── */
+  .page {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem 5rem;
+  }
+
+  /* ── 页眉 ── */
+  .masthead {
+    border-bottom: 2px solid var(--text-primary);
+    padding-bottom: 1.25rem;
+    margin-bottom: 2.5rem;
+  }
+  .masthead-label {
+    font-size: 11px;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--text-hint);
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    margin-bottom: .4rem;
+  }
+  .masthead h1 {
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: .02em;
+    line-height: 1.25;
+  }
+  .masthead h1 span {
+    color: var(--accent);
+  }
+  .masthead-sub {
+    margin-top: .5rem;
+    font-size: 14px;
+    color: var(--text-secondary);
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+  }
+
+  /* ── 计分条 ── */
+  .scoreboard {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 2rem;
+  }
+  .score-cell {
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: 8px;
+    padding: .75rem 1rem;
+  }
+  .score-label {
+    font-size: 11px;
+    letter-spacing: .1em;
+    color: var(--text-hint);
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    margin-bottom: 3px;
+  }
+  .score-val {
+    font-size: 22px;
+    font-weight: 700;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+  }
+  .sv-blue { color: var(--accent); }
+  .sv-green { color: var(--green); }
+  .sv-red { color: var(--red); }
+  .sv-amber { color: var(--amber); }
+
+  /* ── 进度条 ── */
+  .progress-track {
+    height: 3px;
+    background: var(--border-soft);
+    border-radius: 2px;
+    margin-bottom: 2rem;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 2px;
+    transition: width .5s ease;
+  }
+
+  /* ── 筛选栏 ── */
+  .filter-strip {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 1.75rem;
+    align-items: center;
+  }
+  .filter-label {
+    font-size: 12px;
+    color: var(--text-hint);
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+  }
+  .chip {
+    font-size: 12px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    border: 0.5px solid var(--border);
+    background: var(--surface);
+    cursor: pointer;
+    color: var(--text-secondary);
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    transition: all .15s;
+  }
+  .chip:hover { border-color: var(--accent-mid); color: var(--accent); }
+  .chip.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  /* ── 题卡 ── */
+  .q-card {
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem 1.75rem;
+    margin-bottom: 1.25rem;
+    transition: box-shadow .2s;
+  }
+  .q-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+  }
+  .q-num {
+    font-size: 12px;
+    color: var(--text-hint);
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .q-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+  .tag {
+    font-size: 11px;
+    padding: 2px 10px;
+    border-radius: 20px;
+    background: var(--tag-bg);
+    color: var(--tag-text);
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    letter-spacing: .03em;
+  }
+  .q-text {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.65;
+    margin-bottom: 1.25rem;
+    color: var(--text-primary);
+  }
+  .q-text em {
+    font-style: normal;
+    color: var(--accent);
+    border-bottom: 1.5px solid var(--accent-mid);
+  }
+
+  /* ── 选项 ── */
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 1.25rem;
+  }
+  .opt {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    width: 100%;
+    text-align: left;
+    border: 0.5px solid var(--border);
+    border-radius: 8px;
+    padding: .65rem 1rem;
+    background: var(--bg);
+    cursor: pointer;
+    font-size: 14.5px;
+    color: var(--text-primary);
+    font-family: 'Noto Serif SC', 'SimSun', serif;
+    line-height: 1.6;
+    transition: all .15s;
+  }
+  .opt:hover:not(:disabled) {
+    background: var(--accent-light);
+    border-color: var(--accent-mid);
+  }
+  .opt-letter {
+    font-size: 12px;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-weight: 600;
+    color: var(--text-hint);
+    min-width: 18px;
+    margin-top: 2px;
+  }
+  .opt.correct {
+    background: var(--green-light);
+    border-color: #A8D5BE;
+    color: var(--green);
+  }
+  .opt.correct .opt-letter { color: var(--green); }
+  .opt.wrong {
+    background: var(--red-light);
+    border-color: #F0B8A8;
+    color: var(--red);
+  }
+  .opt.wrong .opt-letter { color: var(--red); }
+  .opt.reveal {
+    background: var(--green-light);
+    border-color: #A8D5BE;
+    color: var(--green);
+    opacity: .65;
+  }
+  .opt:disabled { cursor: default; }
+
+  /* ── 解析 ── */
+  .explain {
+    display: none;
+    background: var(--amber-light);
+    border-left: 3px solid #D4A017;
+    border-radius: 0 8px 8px 0;
+    padding: .9rem 1.1rem;
+    font-size: 13.5px;
+    color: var(--text-primary);
+    line-height: 1.75;
+    margin-bottom: 1.1rem;
+  }
+  .explain.show { display: block; }
+  .explain strong { color: var(--accent); }
+  .explain .zh { font-style: italic; color: var(--text-secondary); }
+
+  /* ── 导航按钮 ── */
+  .nav-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .btn {
+    border: 0.5px solid var(--border);
+    border-radius: 6px;
+    padding: .45rem .9rem;
+    font-size: 13px;
+    cursor: pointer;
+    background: var(--surface);
+    color: var(--text-primary);
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    transition: all .15s;
+  }
+  .btn:hover:not(:disabled) { background: var(--bg); border-color: var(--accent-mid); }
+  .btn:disabled { opacity: .35; cursor: default; }
+  .btn-primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+  .btn-primary:hover:not(:disabled) { opacity: .88; background: var(--accent); }
+
+  /* ── 结果页 ── */
+  .result-screen {
+    display: none;
+    text-align: center;
+    padding: 3rem 1rem;
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: 12px;
+  }
+  .result-screen.show { display: block; }
+  .result-title {
+    font-size: 13px;
+    letter-spacing: .15em;
+    color: var(--text-hint);
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    margin-bottom: .75rem;
+  }
+  .result-score {
+    font-size: 64px;
+    font-weight: 700;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    letter-spacing: -.02em;
+    margin-bottom: .5rem;
+  }
+  .result-detail {
+    font-size: 14px;
+    color: var(--text-secondary);
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    margin-bottom: 2rem;
+  }
+  .result-msg {
+    font-size: 16px;
+    color: var(--text-primary);
+    margin-bottom: 2rem;
+  }
+
+  /* ── 题目索引 ── */
+  .q-index {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 2rem;
+    padding: 1rem 1.25rem;
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: 10px;
+  }
+  .q-dot {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 0.5px solid var(--border);
+    font-size: 11px;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+    background: var(--bg);
+    transition: all .15s;
+  }
+  .q-dot:hover { border-color: var(--accent); color: var(--accent); }
+  .q-dot.current { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .q-dot.done-ok { background: var(--green-light); border-color: #A8D5BE; color: var(--green); }
+  .q-dot.done-no { background: var(--red-light); border-color: #F0B8A8; color: var(--red); }
+
+  @media (max-width: 600px) {
+    .page { padding: 1.5rem 1rem 4rem; }
+    .scoreboard { grid-template-columns: repeat(2, 1fr); }
+    .masthead h1 { font-size: 20px; }
+    .q-card { padding: 1.1rem 1.1rem; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="masthead">
+    <div class="masthead-label">现代汉语语法练习</div>
+    <h1>第六章 <span>句子与句子成分</span></h1>
+    <div class="masthead-sub">补语·宾语·主语·谓语·定语·状语·句子分析 共 20 题</div>
+  </div>
+
+  <div class="scoreboard">
+    <div class="score-cell"><div class="score-label">当前题</div><div class="score-val sv-blue" id="cur-q">1 / 20</div></div>
+    <div class="score-cell"><div class="score-label">答对</div><div class="score-val sv-green" id="s-ok">0</div></div>
+    <div class="score-cell"><div class="score-label">答错</div><div class="score-val sv-red" id="s-no">0</div></div>
+    <div class="score-cell"><div class="score-label">正确率</div><div class="score-val sv-amber" id="s-pct">—</div></div>
+  </div>
+
+  <div class="progress-track"><div class="progress-fill" id="prog" style="width:5%"></div></div>
+
+  <div class="filter-strip">
+    <span class="filter-label">按知识点筛选：</span>
+    <button class="chip active" onclick="setFilter('all',this)">全部</button>
+    <button class="chip" onclick="setFilter('buyu',this)">补语</button>
+    <button class="chip" onclick="setFilter('zhuyu',this)">主语 / 谓语</button>
+    <button class="chip" onclick="setFilter('bingo',this)">宾语</button>
+    <button class="chip" onclick="setFilter('dingzhuang',this)">定语 / 状语</button>
+    <button class="chip" onclick="setFilter('fenxi',this)">句子分析</button>
+  </div>
+
+  <div class="q-index" id="q-index"></div>
+
+  <div id="quiz-area"></div>
+  <div class="result-screen" id="result-screen">
+    <div class="result-title">练习结束</div>
+    <div class="result-score" id="res-score"></div>
+    <div class="result-detail" id="res-detail"></div>
+    <div class="result-msg" id="res-msg"></div>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+      <button class="btn btn-primary" onclick="restart()">重新练习</button>
+      <button class="btn" onclick="reviewWrong()">只看错题</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const ALL = [
+  {
+    tag: 'buyu',
+    topic: '补语类型',
+    q: '句子"他跑得很快"中，"很快"是什么句子成分？',
+    opts: ['状语', '补语', '宾语', '定语'],
+    ans: 1,
+    exp: '<strong>补语（程度补语）</strong>。"很快"位于动词"跑"和"得"之后，说明动作的程度。公式：动词 + 得 + 补语。注意：状语在动词<em>前面</em>，补语在动词<em>后面</em>。'
+  },
+  {
+    tag: 'buyu',
+    topic: '趋向补语',
+    q: '下列哪个句子含有<em>趋向补语</em>？',
+    opts: ['他写完了作业。', '他跑进来了。', '他打得很好。', '他在教室里学习。'],
+    ans: 1,
+    exp: '"跑<strong>进来</strong>了"中，"进来"是趋向补语，说明动作的方向。简单趋向补语：上、下、进、出、回、过、起；复合趋向补语：进来、出去、回来、上去、下来……'
+  },
+  {
+    tag: 'buyu',
+    topic: '情态补语',
+    q: '"她高兴得跳起来了"，"跳起来了"属于哪种补语？',
+    opts: ['结果补语', '趋向补语', '情态（程度）补语', '动量补语'],
+    ans: 2,
+    exp: '<strong>情态补语</strong>（也称程度补语）。结构：形容词 + 得 + 小句，描绘达到某种程度时的状态。"高兴得跳起来" = 高兴到了跳起来的程度。'
+  },
+  {
+    tag: 'buyu',
+    topic: '时量补语',
+    q: '"他学了三年汉语"，"三年"是什么成分？',
+    opts: ['宾语', '时量补语', '状语', '动量补语'],
+    ans: 1,
+    exp: '"三年"是<strong>时量补语</strong>，表示动作持续的时间长度。区分：<br>• 时量补语——时间长度（三年、两个月）<br>• 动量补语——动作次数（三次、两遍）'
+  },
+  {
+    tag: 'buyu',
+    topic: '补语的否定',
+    q: '"他跑得很快"的正确否定形式是哪个？',
+    opts: ['他不跑得很快。', '他跑不很快。', '他跑得不快。', '他没跑得很快。'],
+    ans: 2,
+    exp: '带"得"的补语否定时，把<strong>不</strong>放在"得"后、补语前：动词 + 得 + 不 + 补语。例：跑得<strong>不</strong>快、写得<strong>不</strong>好、说得<strong>不</strong>清楚。'
+  },
+  {
+    tag: 'buyu',
+    topic: '补语与宾语的语序',
+    q: '动词后既有结果补语又有宾语时，正确语序是哪个？',
+    opts: ['动词 + 宾语 + 结果补语', '动词 + 结果补语 + 宾语', '宾语 + 动词 + 结果补语', '结果补语 + 动词 + 宾语'],
+    ans: 1,
+    exp: '正确顺序：<strong>动词 + 结果补语 + 宾语</strong>。例：写<strong>完</strong>（补）作业（宾）/ 洗<strong>干净</strong>（补）衣服（宾）/ 吃<strong>完</strong>（补）饭（宾）。补语紧跟动词，宾语在最后。'
+  },
+  {
+    tag: 'buyu',
+    topic: '结果补语 vs 趋向补语',
+    q: '下列哪个句子含有<em>结果补语</em>（非趋向补语）？',
+    opts: ['他走出去了。', '他写完了。', '他跑回来了。', '他拿出来一本书。'],
+    ans: 1,
+    exp: '"写<strong>完</strong>了"——"完"是结果补语，表示动作的结果或完成状态。常见结果补语：完、好、成、坏、错、对、住、开、到、会、懂。而"出去、回来、出来"都是趋向补语。'
+  },
+  {
+    tag: 'buyu',
+    topic: '动量补语',
+    q: '"他打了他三次"中，"三次"是什么补语？',
+    opts: ['时量补语', '动量补语', '程度补语', '结果补语'],
+    ans: 1,
+    exp: '"三次"是<strong>动量补语</strong>，表示动作发生的次数。与时量补语区分：<br>• 动量补语：次、遍、回、趟（次数）<br>• 时量补语：年、月、天、小时（时间长度）'
+  },
+  {
+    tag: 'zhuyu',
+    topic: '主语的类型',
+    q: '"认真学习是每个学生的本分"，主语是什么？',
+    opts: ['认真', '学习', '认真学习', '每个学生'],
+    ans: 2,
+    exp: '主语是<strong>认真学习</strong>——一个状中词组（动词性短语）充当主语。汉语允许动词短语、形容词短语、主谓短语等充当主语，并不限于名词。'
+  },
+  {
+    tag: 'zhuyu',
+    topic: '谓语的类型',
+    q: '下列关于谓语的说法，哪个<em>不正确</em>？',
+    opts: ['动词词组可以作谓语。', '形容词词组可以作谓语。', '单独的名词可以自由地作谓语。', '名词性词组在特定句型中可以作谓语。'],
+    ans: 2,
+    exp: '<strong>单独的名词不能自由作谓语</strong>。能作谓语的主要是动词（词组）和形容词（词组）。名词性词组在特定口语句型中可以作谓语，如"一人一个房间"，但这属于特殊用法。'
+  },
+  {
+    tag: 'zhuyu',
+    topic: '主语的省略',
+    q: '汉语在什么情况下可以省略主语？',
+    opts: ['任何时候都可以省略。', '只能在书面语中省略。', '在语境中所指对象明确时可以省略。', '汉语不允许省略主语。'],
+    ans: 2,
+    exp: '汉语<strong>经常省略主语</strong>。只要在具体的语言环境中所陈述的对象是清楚的，就可以省略。例："她叫王芳，（她）今年三十岁，（她）多次获奖。"'
+  },
+  {
+    tag: 'bingo',
+    topic: '动词性宾语',
+    q: '"他们可以自己完成任务"中，"完成任务"充当什么成分？',
+    opts: ['宾语（名词性）', '宾语（动词性）', '补语', '状语'],
+    ans: 1,
+    exp: '"完成任务"是<strong>动词性宾语</strong>。它是"可以"的宾语，但本身是一个动词短语，而非名词。汉语的宾语可以是名词性、动词性或形容词性的。'
+  },
+  {
+    tag: 'bingo',
+    topic: '宾语的语义关系',
+    q: '"吃食堂"中，"吃"与"食堂"的语义关系是什么？',
+    opts: ['动作——受事', '动作——处所', '动作——工具', '动作——结果'],
+    ans: 1,
+    exp: '"食堂"是吃饭的<strong>处所</strong>，不是被吃的东西。属于<strong>动作——处所</strong>关系，是一种固定说法。类似：跑北京、住楼房。对比：吃大碗（动作——工具）。'
+  },
+  {
+    tag: 'bingo',
+    topic: '宾语的语义关系',
+    q: '"挖坑"与"挖土"的语义关系有何不同？',
+    opts: [
+      '两者都是动作——受事。',
+      '"挖坑"是动作——结果，"挖土"是动作——受事。',
+      '"挖坑"是动作——受事，"挖土"是动作——结果。',
+      '两者都是动作——结果。'
+    ],
+    ans: 1,
+    exp: '<strong>挖坑</strong>：坑是挖的<strong>结果</strong>（动作——结果）。验证：可以说"挖<em>成</em>坑"✓。<br><strong>挖土</strong>：土是被挖的对象（动作——受事）。验证："挖<em>成</em>土"✗。'
+  },
+  {
+    tag: 'bingo',
+    topic: '双宾语',
+    q: '"朋友送了我一份礼物"，哪个是间接宾语（近宾语）？',
+    opts: ['朋友', '我', '一份礼物', '送'],
+    ans: 1,
+    exp: '<strong>我</strong>是间接宾语（近宾语），<strong>一份礼物</strong>是直接宾语（远宾语）。结构：动词 + 间接宾语 + 直接宾语。常见双宾动词：送、给、交、借、还、问、教。'
+  },
+  {
+    tag: 'dingzhuang',
+    topic: '状语',
+    q: '"[在教室里]学习"中，"在教室里"是什么成分？',
+    opts: ['定语', '状语', '补语', '宾语'],
+    ans: 1,
+    exp: '"在教室里"是<strong>介词词组充当状语</strong>，位于动词"学习"前，说明动作发生的地点。区别：同一个介词词组若位于动词<em>后面</em>（如：他生<在上海>），则是补语。'
+  },
+  {
+    tag: 'dingzhuang',
+    topic: '定语与"的"',
+    q: '下列哪种情况的定语必须加"的"？',
+    opts: [
+      '单音节形容词作定语时（如：红花）',
+      '代词"我/你/他"作定语时',
+      '词组（短语）作定语时',
+      '任何情况都不需要"的"'
+    ],
+    ans: 2,
+    exp: '<strong>词组作定语时必须加"的"</strong>。例：（关于鲁迅）<em>的</em>书、（对这次考试）<em>的</em>意见。单音节形容词通常不加"的"（红花、好人）；双音节形容词一般加"的"（美丽的花）。'
+  },
+  {
+    tag: 'dingzhuang',
+    topic: '状语的构成',
+    q: '下列哪些成分可以充当状语？',
+    opts: [
+      '只有副词',
+      '只有介词词组',
+      '只有形容词',
+      '副词、介词词组、时间名词、形容词词组等均可'
+    ],
+    ans: 3,
+    exp: '汉语状语成分非常丰富：<strong>副词</strong>（已经、非常）、<strong>介词词组</strong>（在黑板上、从北京）、<strong>时间名词</strong>（昨天、明天）、<strong>形容词词组</strong>（认真地、迅速地）等都可以充当状语。'
+  },
+  {
+    tag: 'fenxi',
+    topic: '平面分析法',
+    q: '"（我的）叔叔‖[昨天][给我]寄＜来＞（一个）包裹"中，"＜来＞"表示什么？',
+    opts: ['状语', '宾语', '补语', '定语'],
+    ans: 2,
+    exp: '符号"＜ ＞"表示<strong>补语</strong>。"来"是趋向补语。平面分析法符号：（ ）=定语，〔 〕=状语，＜ ＞=补语，___=谓语动词，～～～=宾语。句子主干：叔叔——寄——包裹。'
+  },
+  {
+    tag: 'fenxi',
+    topic: '句子主干',
+    q: '"勤奋的同学们安静地坐在教室里复习功课"的句子<em>主干</em>是什么？',
+    opts: [
+      '同学们——复习——功课',
+      '同学们——安静——坐——复习——功课',
+      '同学们——坐在教室里——复习功课',
+      '勤奋的同学们——复习功课'
+    ],
+    ans: 0,
+    exp: '主干 = 去掉所有定语、状语、补语后剩余的核心成分。完整分析：（勤奋的）同学们 [安静地] [坐＜在教室里＞] 复习 （功课）。主干：<strong>同学们——复习——功课</strong>。'
+  }
+];
+
+let pool = [...ALL];
+let current = 0, okCount = 0, noCount = 0;
+let answered = new Array(ALL.length).fill(undefined);
+let activeFilter = 'all';
+let wrongOnly = false;
+
+function setFilter(f, el) {
+  activeFilter = f;
+  wrongOnly = false;
+  document.querySelectorAll('.chip').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  rebuildPool();
+}
+
+function rebuildPool() {
+  if (wrongOnly) {
+    pool = ALL.filter((q, i) => answered[i] !== undefined && answered[i] !== q.ans);
+  } else {
+    pool = activeFilter === 'all' ? [...ALL] : ALL.filter(q => q.tag === activeFilter);
+  }
+  current = 0; okCount = 0; noCount = 0;
+  answered = new Array(ALL.length).fill(undefined);
+  document.getElementById('result-screen').classList.remove('show');
+  renderIndex();
+  render();
+  updateScore();
+}
+
+function reviewWrong() {
+  wrongOnly = true;
+  rebuildPool();
+}
+
+function restart() {
+  wrongOnly = false;
+  activeFilter = 'all';
+  document.querySelectorAll('.chip').forEach(b => b.classList.remove('active'));
+  document.querySelector('.chip').classList.add('active');
+  rebuildPool();
+}
+
+function renderIndex() {
+  const el = document.getElementById('q-index');
+  el.innerHTML = pool.map((q, i) => {
+    let cls = 'q-dot';
+    if (i === current) cls += ' current';
+    else if (answered[i] !== undefined) {
+      cls += answered[i] === pool[i].ans ? ' done-ok' : ' done-no';
+    }
+    return `<button class="${cls}" onclick="jumpTo(${i})">${i + 1}</button>`;
+  }).join('');
+}
+
+function jumpTo(i) {
+  current = i;
+  renderIndex();
+  render();
+  updateScore();
+}
+
+function render() {
+  const area = document.getElementById('quiz-area');
+  if (current >= pool.length) { area.innerHTML = ''; showResult(); return; }
+  const q = pool[current];
+  const done = answered[current] !== undefined;
+  area.innerHTML = `
+    <div class="q-card">
+      <div class="q-header">
+        <div class="q-num">第 ${current + 1} 题 / 共 ${pool.length} 题</div>
+        <div class="q-tags"><span class="tag">${q.topic}</span></div>
+      </div>
+      <div class="q-text">${q.q}</div>
+      <div class="options">
+        ${q.opts.map((o, i) => {
+          let cls = 'opt';
+          if (done) {
+            if (i === q.ans) cls += ' correct';
+            else if (i === answered[current] && i !== q.ans) cls += ' wrong';
+          }
+          return `<button class="${cls}" ${done ? 'disabled' : ''} onclick="choose(${i})">
+            <span class="opt-letter">${String.fromCharCode(65 + i)}</span>
+            <span>${o}</span>
+          </button>`;
+        }).join('')}
+      </div>
+      <div class="explain ${done ? 'show' : ''}">📝 ${q.exp}</div>
+      <div class="nav-row">
+        <button class="btn" onclick="goPrev()" ${current === 0 ? 'disabled' : ''}>← 上一题</button>
+        <button class="btn" onclick="goNext()" ${current >= pool.length - 1 ? 'disabled' : ''}>下一题 →</button>
+        ${current === pool.length - 1 ? '<button class="btn btn-primary" onclick="showResult()">查看结果</button>' : ''}
+      </div>
+    </div>`;
+}
+
+function choose(i) {
+  if (answered[current] !== undefined) return;
+  answered[current] = i;
+  if (i === pool[current].ans) okCount++; else noCount++;
+  updateScore();
+  renderIndex();
+  render();
+}
+
+function goPrev() { if (current > 0) { current--; renderIndex(); render(); updateScore(); } }
+function goNext() { if (current < pool.length - 1) { current++; renderIndex(); render(); updateScore(); } }
+
+function updateScore() {
+  const done = answered.filter(a => a !== undefined).length;
+  document.getElementById('cur-q').textContent = `${current + 1} / ${pool.length}`;
+  document.getElementById('s-ok').textContent = okCount;
+  document.getElementById('s-no').textContent = noCount;
+  document.getElementById('s-pct').textContent = done ? Math.round(okCount / done * 100) + '%' : '—';
+  document.getElementById('prog').style.width = Math.round((current + 1) / pool.length * 100) + '%';
+}
+
+function showResult() {
+  document.getElementById('quiz-area').innerHTML = '';
+  const rs = document.getElementById('result-screen');
+  rs.classList.add('show');
+  const done = answered.filter(a => a !== undefined).length;
+  const pct = done ? Math.round(okCount / done * 100) : 0;
+  const sc = document.getElementById('res-score');
+  sc.textContent = pct + '%';
+  sc.style.color = pct >= 85 ? '#2D6A4F' : pct >= 65 ? '#7A5C1E' : '#A0341E';
+  document.getElementById('res-detail').textContent = `答对 ${okCount} 题 / 共回答 ${done} 题`;
+  const msgs = ['继续加油，多复习几遍！', '有进步，巩固薄弱知识点！', '不错！基础比较扎实。', '优秀！语法掌握很好！'];
+  document.getElementById('res-msg').textContent = msgs[pct >= 85 ? 3 : pct >= 70 ? 2 : pct >= 50 ? 1 : 0];
+}
+
+renderIndex();
+render();
+updateScore();
+</script>
+</body>
+</html>
